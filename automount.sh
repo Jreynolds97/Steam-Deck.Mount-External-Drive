@@ -10,9 +10,9 @@ unmount_drive() {
     label="$(lsblk -l -noUUID $1)"
   fi
 
-  if [ -d "/run/media/deck/$label" ]; then
-    umount "/run/media/deck/$label"
-    rmdir "/run/media/deck/$label"
+  if [ -d "/run/media/[[USER]]/$label" ]; then
+    umount "/run/media/[[USER]]/$label"
+    rmdir "/run/media/[[USER]]/$label"
   fi
 }
 
@@ -33,26 +33,26 @@ mount_drive() {
   fi
 
   # Create the mount directory and set permissions
-  mkdir -p "/run/media/deck/$label"
-  chown deck:deck "/run/media/deck"
-  chown deck:deck "/run/media/deck/$label"
+  mkdir -p "/run/media/[[USER]]/$label"
+  chown [[USER]]:[[USER]] "/run/media/[[USER]]"
+  chown [[USER]]:[[USER]] "/run/media/[[USER]]/$label"
 
   # Mount the drive
   if [ "$fs_type" = "ntfs" ]; then
     echo "Attempting to mount as NTFS using lowntfs-3g"
-    mount.lowntfs-3g "$1" "/run/media/deck/$label" -ouid=1000,gid=1000,user
+    mount.lowntfs-3g "$1" "/run/media/[[USER]]/$label" -ouid=1000,gid=1000,user
   elif [ "$fs_type" = "btrfs" ]; then
       echo "Attempting to mount as BTRFS with compression"
-      mount -t btrfs -o defaults,compress=zstd "$1" "/run/media/deck/$label"
+      mount -t btrfs -o defaults,compress=zstd "$1" "/run/media/[[USER]]/$label"
   else
     echo "Attempting to mount as $fs_type"
-    mount "$1" "/run/media/deck/$label"
+    mount "$1" "/run/media/[[USER]]/$label"
   fi
 
   # Check if the mount was successful
   mount_point="$(lsblk -l -noMOUNTPOINT $1)"
   if [ -z "$mount_point" ];then
-    echo "Failed to mount $1 at /run/media/deck/$label"
+    echo "Failed to mount $1 at /run/media/[[USER]]/$label"
   else
     echo "Mounted $1 at $mount_point"
     mount_point="$mount_point/SteamLibrary"
