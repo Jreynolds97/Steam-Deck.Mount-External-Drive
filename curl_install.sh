@@ -51,7 +51,7 @@ function install_automount () {
   curl -o "$tmp_dir/automount.sh" "$repo_url/automount.sh"
   curl -o "$tmp_dir/external-drive-mount@.service" "$repo_lib_dir/external-drive-mount@.service"
   curl -o "$tmp_dir/99-external-drive-mount.rules" "$repo_lib_dir/99-external-drive-mount.rules"
-  sed -i "s/[[USER]]/$_user/g" "$tmp_dir/*" 
+  find "$tmp_dir" -type f -exec sed -i "s/[[USER]]/$_user/g" {} \; 
 
   echo "Making script folder $script_install_dir"
   mkdir -p "$script_install_dir"
