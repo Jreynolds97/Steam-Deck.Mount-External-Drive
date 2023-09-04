@@ -3,6 +3,9 @@
 #License: DBAD: https://github.com/jreynolds97/Steam-Deck.Mount-External-Drive/blob/main/LICENSE.md
 #Source: https://github.com/jreynolds97/Steam-Deck.Mount-External-Drive
 # Use at own Risk!
+urlencode() {
+  /usr/bin/python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< $1
+}
 
 unmount_drive() {
   label="$(lsblk -l -noLABEL $1)"
@@ -60,6 +63,7 @@ mount_drive() {
 
     url=$(urlencode "${mount_point}")
 
+    echo "$url"
     if pgrep -x "steam" > /dev/null; then
         systemd-run -M 1000@ --user --collect --wait sh -c "steam steam://addlibraryfolder/${url@Q}"
     fi
