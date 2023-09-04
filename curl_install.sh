@@ -1,37 +1,38 @@
 #!/bin/bash
 #Steam Deck Mount External Drive by scawp
-#License: DBAD: https://github.com/flavioislima/Steam-Deck.Mount-External-Drive/blob/main/LICENSE.md
-#Source: https://github.com/flavioislima/Steam-Deck.Mount-External-Drive
+#License: DBAD: https://github.com/jreynolds97/Steam-Deck.Mount-External-Drive/blob/main/LICENSE.md
+#Source: https://github.com/jreynolds97/Steam-Deck.Mount-External-Drive
 # Use at own Risk!
 
-#curl -sSL https://raw.githubusercontent.com/flavioislima/Steam-Deck.Mount-External-Drive/main/curl_install.sh | bash
+#curl -sSL https://raw.githubusercontent.com/jreynolds97/Steam-Deck.Mount-External-Drive/main/curl_install.sh | bash
 
 #stop running script if anything returns an error (non-zero exit )
 set -e
 
-repo_url="https://raw.githubusercontent.com/flavioislima/Steam-Deck.Mount-External-Drive/main"
+repo_url="https://raw.githubusercontent.com/jreynolds97/Steam-Deck.Mount-External-Drive/main"
 repo_lib_dir="$repo_url/lib"
 
-tmp_dir="/tmp/flavioislima.SDMED.install"
+tmp_dir="/tmp/jreynolds97.SDMED.install"
+
+device_name="$(uname --nodename)"
+_user="${SUDO_USER:-deck}"
+user="$(id -u ${_user:-deck})"
 
 rules_install_dir="/etc/udev/rules.d"
 service_install_dir="/etc/systemd/system"
-script_install_dir="/home/deck/.local/share/flavioislima/SDMED"
+script_install_dir="/home/$_user/.local/share/jreynolds97/SDMED"
 
-device_name="$(uname --nodename)"
-user="$(id -u deck)"
-
-if [ "$device_name" != "steamdeck" ] || [ "$user" != "1000" ]; then
-  zenity --question --width=400 \
-  --text="This code has been written specifically for the Steam Deck with user Deck \
-  \nIt appears you are running on a different system/non-standard configuration. \
-  \nAre you sure you want to continue?"
-  if [ "$?" != 0 ]; then
-    #NOTE: This code will never be reached due to "set -e", the system will already exit for us but just incase keep this
-    echo "bye then! xxx"
-    exit 1;
-  fi
-fi
+#if [ "$device_name" != "steamdeck" ] || [ "$user" != "1000" ]; then
+#  zenity --question --width=400 \
+#  --text="This code has been written specifically for the Steam Deck with user Deck \
+#  \nIt appears you are running on a different system/non-standard configuration. \
+#  \nAre you sure you want to continue?"
+#  if [ "$?" != 0 ]; then
+#    #NOTE: This code will never be reached due to "set -e", the system will already exit for us but just incase keep this
+#    echo "bye then! xxx"
+#    exit 1;
+#  fi
+#fi
 
 function install_automount () {
   zenity --question --width=400 \
@@ -50,6 +51,7 @@ function install_automount () {
   curl -o "$tmp_dir/automount.sh" "$repo_url/automount.sh"
   curl -o "$tmp_dir/external-drive-mount@.service" "$repo_lib_dir/external-drive-mount@.service"
   curl -o "$tmp_dir/99-external-drive-mount.rules" "$repo_lib_dir/99-external-drive-mount.rules"
+  sed -i "s/[[USER]]/$_user/g" "$tmp_dir/99-external-drive-mount.rules" 
 
   echo "Making script folder $script_install_dir"
   mkdir -p "$script_install_dir"
@@ -94,6 +96,8 @@ function install_zmount () {
 }
 
 install_automount
-install_zmount
+if [[ "$_user" = "deck" ]]; then
+  install_zmount
+fi
 
 echo "Done."

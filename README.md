@@ -1,8 +1,7 @@
 # READ THIS FIRST
 This script is based on the one written by scawp: https://github.com/scawp/Steam-Deck.Mount-External-Drive.
-Since it got no updates or improvements for a while now, I decided to take a look and see what I could do to improve it since my main issue with it was because it was not working with multiple external storages at the same time on Gaming Mode. Also some things were not implemented like the method to unmount the drives and the checks for the folder if it existed or not. 
+I mostly found that lsblk defaulted to tree mode, and I wanted to use it on desktop linux to automount a removable drive to allow both steamdeck and desktop to share a drive.
 
-So this version now supports all of that and I might improve with other features in the future.
 
 # Check the original READ ME bellow
 

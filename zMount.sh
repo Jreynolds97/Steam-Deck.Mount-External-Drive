@@ -41,7 +41,7 @@ function confirm_gui () {
 
 function get_drive_list () {
   #Overkill? Perhaps, but Zenity (or I) was struggling with Splitting
-  lsblk -PoHOTPLUG,PATH,SIZE,UUID,MOUNTPOINT,LABEL,FSTYPE | grep '^HOTPLUG="1"' | grep -v 'UUID=\"\"' | sed -e 's/^HOTPLUG=\"1\"\sPATH=\"//' -e 's/\"\"/\" \"/g' -e 's/\"\s[A-Z]*=\"/\t/g' -e 's/\"$//' | tee "$external_drive_list"
+  lsblk -l -PoHOTPLUG,PATH,SIZE,UUID,MOUNTPOINT,LABEL,FSTYPE | grep '^HOTPLUG="1"' | grep -v 'UUID=\"\"' | sed -e 's/^HOTPLUG=\"1\"\sPATH=\"//' -e 's/\"\"/\" \"/g' -e 's/\"\s[A-Z]*=\"/\t/g' -e 's/\"$//' | tee "$external_drive_list"
 }
 
 function sudo_mount_drive () {
@@ -79,8 +79,8 @@ function mount_drive () {
 function main () {
   get_drive_list
   list_gui
-  mount_point="$(lsblk -noMOUNTPOINT $selected_device)"
-  uuid="$(lsblk -noUUID $selected_device)"
+  mount_point="$(lsblk -l -noMOUNTPOINT $selected_device)"
+  uuid="$(lsblk -l -noUUID $selected_device)"
 
   if [ "$ret_value" = 1 ]; then
     if [ "$selected_device" = "Refresh" ]; then

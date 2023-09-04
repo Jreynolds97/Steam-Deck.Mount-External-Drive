@@ -8,5 +8,5 @@ Description=Mount External Drive on %i
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/home/deck/.local/share/flavioislima/SDMED/automount.sh add %i
-ExecStop=/home/deck/.local/share/flavioislima/SDMED/automount.sh remove %i
+ExecStart=/home/[[USER]]/.local/share/jreynolds97/SDMED/automount.sh add %i
+ExecStop=/home/[[USER]]/.local/share/jreynolds97/SDMED/automount.sh remove %i
